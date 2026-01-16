@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! command -v niri >/dev/null 2>&1; then
+  exit 0
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  exit 0
+fi
+
+windows_json=$(niri msg -j windows 2>/dev/null || true)
+
+if [[ -z "$windows_json" ]]; then
+  exit 0
+fi
+
+jq -r '.. | objects | .id? // empty' <<<"$windows_json" | while read -r id; do
+  [[ -n "$id" ]] || continue
+  niri msg action close-window --id "$id" 2>/dev/null || true
+done

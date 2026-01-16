@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+"$(dirname "$0")/cachyos-state" clear re*-required
+
+nohup bash -c "sleep 2 && systemctl poweroff --no-wall" >/dev/null 2>&1 &
+
+"$(dirname "$0")/cachyos-niri-window-close-all"
+sleep 1

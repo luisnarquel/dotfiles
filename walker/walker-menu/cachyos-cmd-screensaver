@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! command -v tte >/dev/null 2>&1; then
+  exit 1
+fi
+
+exit_screensaver() {
+  pkill -x tte 2>/dev/null || true
+  pkill -f org.cachyos.screensaver 2>/dev/null || true
+  exit 0
+}
+
+trap exit_screensaver SIGINT SIGTERM SIGHUP SIGQUIT
+
+printf '\033]11;rgb:00/00/00\007'
+
+tty=$(tty 2>/dev/null || true)
+
+while true; do
+  tte -i "$HOME/.config/omarchy/branding/screensaver.txt" --frame-rate 120 --canvas-width 0 --canvas-height 0 --reuse-canvas --anchor-canvas c --anchor-text c --random-effect --exclude-effects dev_worm --no-eol --no-restore-cursor &
+
+  if [[ -n "$tty" ]]; then
+    while pgrep -t "${tty#/dev/}" -x tte >/dev/null 2>&1; do
+      if read -n1 -t 1; then
+        exit_screensaver
+      fi
+    done
+  else
+    wait
+  fi
+done

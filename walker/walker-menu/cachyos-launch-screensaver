@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+if ! command -v tte >/dev/null 2>&1; then
+  exit 1
+fi
+
+pgrep -f org.cachyos.screensaver >/dev/null 2>&1 && exit 0
+
+STATE_FILE="$HOME/.local/state/cachyos/toggles/screensaver-off"
+
+if [[ -f "$STATE_FILE" ]] && [[ "${1:-}" != "force" ]]; then
+  exit 1
+fi
+
+walker -q 2>/dev/null || true
+
+if command -v xdg-terminal-exec >/dev/null 2>&1; then
+  xdg-terminal-exec bash -lc "exec bash -lc 'printf \"\\033]0;org.cachyos.screensaver\\007\"; exec \"$(dirname "$0")/cachyos-cmd-screensaver\"'" &
+elif command -v foot >/dev/null 2>&1; then
+  foot --app-id org.cachyos.screensaver -e "$(dirname "$0")/cachyos-cmd-screensaver" &
+elif command -v kitty >/dev/null 2>&1; then
+  kitty --class org.cachyos.screensaver "$(dirname "$0")/cachyos-cmd-screensaver" &
+elif command -v alacritty >/dev/null 2>&1; then
+  alacritty --class org.cachyos.screensaver -e "$(dirname "$0")/cachyos-cmd-screensaver" &
+else
+  "$(dirname "$0")/cachyos-cmd-screensaver" &
+fi

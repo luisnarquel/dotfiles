@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+menu() {
+  local prompt="$1"
+  local options="$2"
+  local extra="${3:-}"
+
+  read -r -a args <<<"$extra"
+  echo -e "$options" | walker --dmenu -p "$prompt…" "${args[@]}" 2>/dev/null || true
+}
+
+terminal() {
+  if command -v xdg-terminal-exec >/dev/null 2>&1; then
+    xdg-terminal-exec "$@"
+  elif command -v foot >/dev/null 2>&1; then
+    foot -e "$@"
+  elif command -v kitty >/dev/null 2>&1; then
+    kitty "$@"
+  elif command -v alacritty >/dev/null 2>&1; then
+    alacritty -e "$@"
+  else
+    "$@"
+  fi
+}
+
+open_in_editor() {
+  notify-send "Editing config file" "$1"
+  ghostty -e nvim "$1"
+}
+
+show_share_menu() {
+  case $(menu "Share" "  Clipboard\n  File\n  Folder") in
+  *Clipboard*) "$SCRIPT_DIR/cachyos-cmd-share" clipboard ;;
+  *File*) terminal bash -c "\"$SCRIPT_DIR/cachyos-cmd-share\" file" ;;
+  *Folder*) terminal bash -c "\"$SCRIPT_DIR/cachyos-cmd-share\" folder" ;;
+  *) show_trigger_menu ;;
+  esac
+}
+
+show_install_menu() {
+  gtk-launch cachyos-pi >/dev/null 2>&1 &
+}
+
+show_screenshot_menu() {
+  case $(menu "Screenshot" "  Snap with Editing\n  Straight to Clipboard") in
+  *Editing*) "$SCRIPT_DIR/cachyos-cmd-screenshot" smart ;;
+  *Clipboard*) "$SCRIPT_DIR/cachyos-cmd-screenshot" smart clipboard ;;
+  *) show_capture_menu ;;
+  esac
+}
+
+show_screenrecord_menu() {
+  if "$SCRIPT_DIR/cachyos-cmd-screenrecord" --stop-recording 2>/dev/null; then
+    exit 0
+  fi
+
+  case $(menu "Screenrecord" "  With desktop audio\n  With desktop + microphone audio") in
+  *"With desktop audio") "$SCRIPT_DIR/cachyos-cmd-screenrecord" --with-desktop-audio ;;
+  *"With desktop + microphone audio") "$SCRIPT_DIR/cachyos-cmd-screenrecord" --with-desktop-audio --with-microphone-audio ;;
+  *) show_capture_menu ;;
+  esac
+}
+
+show_capture_menu() {
+  case $(menu "Capture" "  Screenshot\n  Screenrecord") in
+  *Screenshot*) show_screenshot_menu ;;
+  *Screenrecord*) show_screenrecord_menu ;;
+  *) show_trigger_menu ;;
+  esac
+}
+
+show_trigger_menu() {
+  case $(menu "Trigger" "  Capture\n  Share") in
+  *Capture*) show_capture_menu ;;
+  *Share*) show_share_menu ;;
+  *) show_main_menu ;;
+  esac
+}
+
+show_setup_menu() {
+  case $(menu "Setup" "  Audio\n󰍹  Niri\n  Config") in
+  *Audio*) pavucontrol ;;
+  *Niri*) open_in_editor ~/.config/niri/config.kdl ;;
+  *Config*) show_setup_config_menu ;;
+  *) show_main_menu ;;
+  esac
+}
+
+show_setup_config_menu() {
+  case $(menu "Config" "  Fish\n󰊄  Ghostty\n󰍹  Niri\n󰓾  Starship\n󰍜  Waybar") in
+  *Fish*) open_in_editor ~/.config/fish/config.fish ;;
+  *Ghostty*) open_in_editor ~/.config/ghostty/config ;;
+  *Niri*) open_in_editor ~/.config/niri/config.kdl ;;
+  *Starship*) open_in_editor ~/.config/starship.toml ;;
+  *Waybar*) open_in_editor ~/.config/waybar/config ;;
+  *) show_setup_menu ;;
+  esac
+}
+
+show_system_menu() {
+  local options="  Lock\n󱄄  Screensaver\n󰜉  Restart\n󰐥  Shutdown"
+
+  if command -v systemctl >/dev/null 2>&1; then
+    options="${options}\n󰒲  Suspend\n󰤁  Hibernate"
+  fi
+
+  case $(menu "System" "$options") in
+  *Lock*) "$SCRIPT_DIR/cachyos-lock-screen" ;;
+  *Screensaver*) "$SCRIPT_DIR/cachyos-launch-screensaver" force ;;
+  *Suspend*) systemctl suspend ;;
+  *Hibernate*) systemctl hibernate ;;
+  *Restart*) "$SCRIPT_DIR/cachyos-cmd-reboot" ;;
+  *Shutdown*) "$SCRIPT_DIR/cachyos-cmd-shutdown" ;;
+  *) show_main_menu ;;
+  esac
+}
+
+show_main_menu() {
+  go_to_menu "$(menu "Go" "󰀻  Apps\n󰉋  Files\n󱓞  Trigger\n󰉉  Install\n  Setup\n  System")"
+}
+
+go_to_menu() {
+  case "${1,,}" in
+  *apps*) nc -U "/run/user/$(id -u)/walker/walker.sock" || true ;;
+  *files*) nautilus --new-window ;;
+  *trigger*) show_trigger_menu ;;
+  *install*) show_install_menu ;;
+  *setup*) show_setup_menu ;;
+  *system*) show_system_menu ;;
+  esac
+}
+
+show_main_menu
