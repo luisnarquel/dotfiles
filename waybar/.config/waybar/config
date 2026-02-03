@@ -24,6 +24,7 @@
 
     "modules-right": [
         "tray",
+        "network",
         "pulseaudio",
         "clock",
         "custom/exit"

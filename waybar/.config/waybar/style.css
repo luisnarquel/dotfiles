@@ -57,6 +57,7 @@ tooltip {
 #cpu,
 #window,
 #clock,
+#network,
 #pulseaudio,
 #workspaces,
 #tray,
@@ -95,8 +96,10 @@ tooltip {
 
 #network {
   color: #f9e2af;
-  border-radius: 7px 7px 7px 7px;
-  margin-right: 5px;
+  border-radius: 13px 0px 0px 13px; /* left pill */
+  padding-left: 10px;
+  padding-right: 6px;
+  margin-right: 0px;
 }
 
 #custom-notifications {

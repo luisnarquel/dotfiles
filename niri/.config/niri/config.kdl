@@ -8,6 +8,7 @@ input {
     keyboard {
         xkb {
             layout "us" // Use the German keyboard layout
+            variant "intl"
         }
         numlock // Enable numlock on startup
     }
@@ -17,7 +18,7 @@ input {
         natural-scroll // Enable natural (macOS-style) scrolling
     }
 
-    focus-follows-mouse // Automatically focus windows under the mouse pointer
+    focus-follows-mouse max-scroll-amount="0%" // Automatically focus windows under the mouse pointer
     workspace-auto-back-and-forth // Enable workspace back & forth switching
 }
 
@@ -46,11 +47,12 @@ binds {
     MOD+SHIFT+ESCAPE                     { show-hotkey-overlay; }
 
     // ─── Applications ───
-    MOD+RETURN                          hotkey-overlay-title="Open Terminal: alacritty" { spawn-sh "alacritty"; }
+    MOD+RETURN                          hotkey-overlay-title="Open Terminal: ghostty" { spawn-sh "ghostty"; }
     MOD+SPACE                           hotkey-overlay-title="Open App Launcher: walker" { spawn-sh "nc -U /run/user/$(id -u)/walker/walker.sock"; }
     MOD+ALT+SPACE                       hotkey-overlay-title="Open Menu: walker-menu" { spawn-sh "~/walker-menu/walker-menu"; }
     MOD+B                               hotkey-overlay-title="Open Browser: firefox" { spawn-sh "firefox"; }
     MOD+ALT+L                           hotkey-overlay-title="Lock Screen: swaylock" { spawn-sh "swaylock"; }
+    MOD+N                               hotkey-overlay-title="Open Notes: tjournal" { spawn-sh "ghostty -e tjournal"; }
     
     // Please choose your own file manager
     MOD+E                             hotkey-overlay-title="File Manager: Nautilus" { spawn-sh "nautilus"; }
@@ -269,6 +271,7 @@ binds {
         QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
         XDG_SESSION_TYPE "wayland"
         XDG_CURRENT_DESKTOP "niri"
+        GTK_IM_MODULE "simple"
     }
 
     hotkey-overlay {

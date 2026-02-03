@@ -118,6 +118,13 @@
     "spacing": 10
   },
 
+  "network": {
+    "format-ethernet": "",
+    "format-disconnected": "",
+    "tooltip-format": "IP: {ipaddr}\nDown: {bandwidthDownBits}\nUp: {bandwidthUpBits}",
+    "interval": 2
+  },
+
   // Clock
   "clock": {
     "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",

@@ -232,6 +232,22 @@ return {
 				--   },
 				-- },
 			},
+
+			jdtls = {
+				settings = {
+					java = {
+						configuration = {
+							runtimes = {
+								{
+									name = "Java25",
+									path = "/opt/jdk-25.0.2+10",
+									default = true,
+								},
+							},
+						},
+					},
+				},
+			},
 		}
 
 		-- Ensure the servers and tools above are installed

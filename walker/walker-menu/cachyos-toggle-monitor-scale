@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -u
+
+MONITOR_1="HDMI-A-1"  # Change this to match your monitor name
+MONITOR_2="HDMI-A-2"
+
+get_scale() {
+    local monitor="$1"
+
+    niri msg outputs | awk -v mon="$monitor" '
+        $1 == "Output" && $NF == "("mon")" {
+            in_block = 1
+            next
+        }
+        in_block && $1 == "Scale:" {
+            print $2
+            exit
+        }
+    '
+}
+
+CURRENT=$(get_scale "$MONITOR_1")
+echo $CURRENT
+
+if [[ "$CURRENT" == "1" ]]; then
+    echo "Switching to mac-friendly scale..."
+    niri msg output $MONITOR_1 scale 2
+    niri msg output $MONITOR_2 off
+elif [[ "$CURRENT" == "2" ]]; then
+    echo "Switching back to default scale..."
+    niri msg output $MONITOR_1 scale 1
+    niri msg output $MONITOR_2 on
+else
+    echo "Current mode is $CURRENT — defaulting to Default."
+    niri msg output $MONITOR_1 scale 1
+    niri msg output $MONITOR_2 on
+fi
