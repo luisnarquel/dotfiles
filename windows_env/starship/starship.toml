@@ -1,5 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+scan_timeout = 100
+
 format = """
 [](red)\
 $os\
@@ -10,14 +12,8 @@ $directory\
 $git_branch\
 $git_status\
 [](fg:yellow bg:green)\
-$c\
-$rust\
-$golang\
 $nodejs\
-$php\
 $java\
-$kotlin\
-$haskell\
 $python\
 [](fg:green bg:sapphire)\
 $conda\
@@ -83,6 +79,7 @@ format = '[[ $symbol $branch ](fg:crust bg:yellow)]($style)'
 [git_status]
 style = "bg:yellow"
 format = '[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)'
+ignore_submodules = true
 
 [nodejs]
 symbol = ""
@@ -163,7 +160,7 @@ show_milliseconds = true
 format = " in $duration "
 style = "bg:lavender"
 disabled = false
-show_notifications = true
+show_notifications = false
 min_time_to_notify = 45000
 
 [palettes.catppuccin_mocha]

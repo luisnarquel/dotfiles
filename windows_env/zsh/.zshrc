@@ -2,6 +2,9 @@
 autoload -Uz compinit
 compinit
 
+# aliases
+alias ll='ls -lah --group-directories-first --color=auto 2>/dev/null'
+
 # Starship prompt
 eval "$(starship init zsh)"
 
