@@ -74,10 +74,11 @@ show_capture_menu() {
 }
 
 show_trigger_menu() {
-  case $(menu "Trigger" "  Capture\n  Share\n󰍹  Toggle Monitor Scale") in
+  case $(menu "Trigger" "  Capture\n  Share\n󰍹  Toggle Monitor Scale\n󰍹  Start Sunshine Gaming") in
   *Capture*) show_capture_menu ;;
   *Share*) show_share_menu ;;
-  *Monitor*) "$SCRIPT_DIR/cachyos-toggle-monitor-scale" ;;
+  *Monitor\ Scale*) "$SCRIPT_DIR/cachyos-toggle-monitor-scale" ;;
+  *Start\ Sunshine*) "$SCRIPT_DIR/cachyos-start-sunshine-gaming" ;;
   *) show_main_menu ;;
   esac
 }

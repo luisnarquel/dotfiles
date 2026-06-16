@@ -1,0 +1,12 @@
+#!/bin/bash
+set -u
+
+MONITOR_1="HDMI-A-1"
+MONITOR_2="HDMI-A-2"
+
+NIRI=/usr/bin/niri
+
+$NIRI msg output $MONITOR_1 on
+$NIRI msg output $MONITOR_2 on
+
+exit 0

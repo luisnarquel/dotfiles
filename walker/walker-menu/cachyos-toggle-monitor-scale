@@ -4,6 +4,7 @@ set -u
 
 MONITOR_1="HDMI-A-1"  # Change this to match your monitor name
 MONITOR_2="HDMI-A-2"
+MONITOR_3="DP-1"
 
 get_scale() {
     local monitor="$1"
@@ -27,12 +28,15 @@ if [[ "$CURRENT" == "1" ]]; then
     echo "Switching to mac-friendly scale..."
     niri msg output $MONITOR_1 scale 2
     niri msg output $MONITOR_2 off
+    niri msg output $MONITOR_3 off
 elif [[ "$CURRENT" == "2" ]]; then
     echo "Switching back to default scale..."
     niri msg output $MONITOR_1 scale 1
     niri msg output $MONITOR_2 on
+    niri msg output $MONITOR_3 on
 else
     echo "Current mode is $CURRENT — defaulting to Default."
     niri msg output $MONITOR_1 scale 1
     niri msg output $MONITOR_2 on
+    niri msg output $MONITOR_3 on
 fi

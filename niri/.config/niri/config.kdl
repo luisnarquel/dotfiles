@@ -177,8 +177,8 @@ binds {
 // https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
 
     spawn-sh-at-startup "/usr/lib/polkit-kde-authentication-agent-1 &" // Polkit
-    spawn-sh-at-startup "swww-daemon" // Wallpaper daemon
-    spawn-sh-at-startup "swww img ~/.config/wallpapers/sci_fi_girl_boy_travel_exploring_planet_purple-wallpaper-2560x1440.jpg" // Set wallpaper
+    spawn-sh-at-startup "awww-daemon" // Wallpaper daemon
+    spawn-sh-at-startup "awww img ~/.config/wallpapers/sci_fi_girl_boy_travel_exploring_planet_purple-wallpaper-2560x1440.jpg" // Set wallpaper
     spawn-sh-at-startup "waybar" // Launch waybar
 
     prefer-no-csd // Disable program decorations
